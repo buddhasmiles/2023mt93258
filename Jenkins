@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout the code from GitLab
+                git 'https://github.com/buddhasmiles/2023mt93258.git'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                // Build the code
+                sh 'mvn clean package'
+            }
+        }
+        
+        stage('Compile') {
+            steps {
+                // Compile the code
+                sh 'mvn compile'
+            }
+        }
+    }
+    
+    // Notify on failure
+    post {
+        failure {
+            mail to: 'jeebukarthikeyan@gmail.com',
+                 subject: 'Pipeline failed',
+                 body: "The pipeline ${currentBuild.fullDisplayName} failed. Please check the Jenkins console output for more details."
+        }
+    }
+}
